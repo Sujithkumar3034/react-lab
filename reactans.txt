@@ -1,0 +1,654 @@
+	1.Create a stateless function component
+CODE:
+import React from 'react'
+const Lab = () => {
+  return (
+    <div>
+        <h1>This is a Stateless Functional Component</h1>
+    </div>
+  )
+}
+
+export default Lab
+
+END
+-----------------------------------------------------------------------------
+2.stateful class component 
+CODE:
+import React, { Component } from 'react'
+ class Lab extends Component {
+  render() {
+    return (
+      <div>
+        <h1>This is Statefull Class Component</h1>
+      </div>
+    )
+  }
+}
+export default Lab
+
+END
+----------------------------------------------------------------------------
+
+3.conditional rendering using class component 
+CODE:
+import React, { Component } from 'react';
+
+export class Lab extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showGreeting: false, 
+    };
+  }
+  render() {
+    return (
+      <div>
+        {this.state.showGreeting ? <h1>Welcome to the Site!</h1> : <h1>Have a great day!</h1>}
+      </div>
+    );
+  }
+}
+export default Lab;
+
+END
+-----------------------------------------------------------------------------
+
+4.(parent – child )between components 
+CODE:
+Parent.js
+import React from 'react'
+import Child from '../Props/Child'
+const Parent = () => {
+    const handle=()=>{
+        console.log("Hello,this parent")
+        alert("Hello")
+    }
+    const hanleGood=()=>{
+        alert("Goodbye from parent")
+    }
+  return (
+    <div>
+        <h1> This is Parent </h1>
+        <button onClick={handle}>Click</button>
+        <Child greet={hanleGood}></Child>
+    </div>
+  )
+}
+export default Parent
+Child.js
+import React from 'react'
+const Child = () => {
+  return (
+    <>
+<h1>Today have a good day</h1>
+    </>
+  )
+}
+export default Child
+END
+-----------------------------------------------------------------------------
+
+5.Material UI card using react 
+CODE:
+import * as React from 'react';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Button from '@mui/material/Button';	
+import Typography from '@mui/material/Typography';
+import img from '../Hooks/img.jpg'
+
+export default function Stateless() {
+  return (
+    <center>
+      <Card sx={{ maxWidth: 345 }}>
+        <CardMedia
+          component="img" 
+          sx={{ height: 300 }}
+          image={img} 
+          title="Flower"
+        />
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="div">
+            Flowers
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            This is a sample card created using React Material UI Component.
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <Button size="small">Share</Button>
+          <Button size="small">Learn More</Button>
+        </CardActions>
+      </Card>
+    </center>
+  );
+}
+END
+-----------------------------------------------------------------------------
+
+ 
+6.Custom navigation bar 
+CODE:
+import React from 'react';
+import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+
+const Nav = () => {
+  return (
+    <>
+      <AppBar
+        position="static"
+        sx={{
+          color: 'white',
+          background: 'linear-gradient(to left, yellow, green)',
+          boxShadow: 3,
+        }}
+      >
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            MyApp
+          </Typography>
+          <Button
+            sx={{
+              color: 'black',
+              textTransform: 'none',
+              fontSize: '16px',
+              mx: 1,
+            }}
+          >
+            Home
+          </Button>
+
+          <Button
+            sx={{
+              color: 'black',
+              textTransform: 'none',
+              fontSize: '16px',
+              mx: 1,
+            }}
+          >
+            About
+          </Button>
+
+          <Button
+            sx={{
+              color: 'black',
+              textTransform: 'none',
+              fontSize: '16px',
+              mx: 1,
+            }}
+          >
+            Services
+          </Button>
+
+          <Button
+            sx={{
+              color: 'black',
+              textTransform: 'none',
+              fontSize: '16px',
+              mx: 1,
+            }}
+          >
+            Contact
+          </Button>
+
+        </Toolbar>
+      </AppBar>
+    </>
+  );
+};
+export default Nav;
+ END
+-----------------------------------------------------------------------------
+
+
+
+7.HTTP request 
+CODE:
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+const Lab= () => {
+    const [users, setUsers] = useState([]);
+    const [userName, setUserName] = useState('');
+    const [editUserId, setEditUserId] = useState(null);
+    useEffect(() => {
+        fetchUsers();
+    }, []);
+    const fetchUsers = () => {
+        axios.get('https://jsonplaceholder.typicode.com/users')
+            .then(res => {
+                setUsers(res.data); 
+            });
+    };
+    const createUser = () => {
+        axios.post('https://jsonplaceholder.typicode.com/users', { name: userName })
+            .then(res => {
+                setUsers([...users, res.data]); 
+                setUserName(''); 
+            });
+    };
+
+    const updateUser = () => {
+        axios.put(`https://jsonplaceholder.typicode.com/users/${editUserId}`, { name: userName })
+            .then(response => {
+                setUsers(users.map(user => user.id === editUserId ? response.data : user)); 
+                setEditUserId(null); 
+                setUserName(''); 
+            });
+    };
+    const deleteUser = (id) => {
+        axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`)
+            .then(() => {
+                setUsers(users.filter(user => user.id !== id));});};
+    const handleEdit = (id, name) => {
+        setEditUserId(id); 
+        setUserName(name); 
+    };
+    return (
+        <div>
+            <input 
+                type="text" 
+                placeholder="User name" 
+                value={userName} 
+                onChange={(e) => setUserName(e.target.value)} />
+            {editUserId ? (
+                <button onClick={updateUser}>Update User</button>
+            ) : (
+                <button onClick={createUser}>Add User</button>
+            )}
+            <ul>
+                {users.map(user => (
+                    <li key={user.id}>
+                        {user.name}
+                        <button onClick={() => handleEdit(user.id, user.name)}>Edit</button>
+                        <button onClick={() => deleteUser(user.id)}>Delete</button>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
+export default Lab; 
+END
+-----------------------------------------------------------------------------
+
+
+8.Dropdown 
+CODE:
+import React, { useState } from 'react';
+const Lab= () => {
+    const [select, setSelect] = useState(''); 
+    const options = [
+        { value: '', label: 'Select an option' },
+        { value: 'React', label: 'React' },
+        { value: 'Java', label: 'Java' },
+        {value:'Python',label:'Python'}
+    ];
+    const handleChange = (event) => {
+        setSelect(event.target.value); 
+    };
+    return (
+        <div> <center>
+            <select value={select} onChange={handleChange}>
+                {options.map(option => (
+                    <option key={option.value} value={option.value}>
+                        {option.label}
+                    </option>
+                ))}
+            </select>
+            {select && <p>You selected: {select}</p>}
+            </center>
+        </div>
+    );};
+export default Lab;
+END
+-----------------------------------------------------------------------------
+
+
+9.Routing 
+CODE:
+Navigate.js
+import React from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Register from './Register'
+import Home from './Home'
+import Login from './Login1'
+
+const Navigate = () => {
+  return (
+    <div>
+        <BrowserRouter>
+        <Routes >
+            <Route path='/' element={<Register/>}></Route>
+            <Route path='/Login' element={<Login/>}></Route>
+            <Route path='/Home' element={<Home/>}></Route>
+        </Routes>
+            </BrowserRouter>
+    </div>
+  )
+}
+
+export default Navigate
+
+
+Home.js
+import React from 'react'
+const Home = () => {
+  return (
+    <div>
+        <h1>This is Home Page</h1>
+    </div>
+  )
+}
+export default Home
+Login.js
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Button } from '@mui/material';
+const Login = () => {
+  const navigate=useNavigate();
+ const handleLog=()=>{
+    navigate(`/home`)
+ }
+  return (
+    <div>
+    
+      <center>
+      <h1 style={{color:'yellow',backgroundColor:'grey'}}>Welcome to Login Page</h1>
+
+      <form style={{backgroundColor:'red',padding:'20px ', border:'20px solid highlight', borderBlockColor:'Highlight'}}>
+       
+        <label>Email:</label>
+        <input type='text' placeholder='Enter the Email:'  name='Email'></input><br/>
+        <br/>
+        <label>Password:</label>
+        <input type='text' placeholder='Enter the Password:'  name='password'></input><br/>
+        <br/>
+        <Button onClick={handleLog}>Submit</Button>
+      </form>
+      </center>
+    </div>
+  )
+}
+
+export default Login
+Register.js
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+
+const Register = () => {
+  const navigate=useNavigate()
+  const handleRegister=()=>{
+navigate('/Login')
+  }
+  return (
+    <>
+    <div>
+      
+      <center>
+      <h1 style={{color:'orange',backgroundColor:'green'}}>Welcome to Register Page</h1>
+      <form style={{backgroundColor:'gray',padding:'20px ', border:'20px solid highlight', borderBlockColor:'Highlight'}}>
+        <label>Name:</label>
+        <input type='text' placeholder='Enter the Name:'  name='name'></input><br/>
+        <br/>
+        <label>Email:</label>
+        <input type='text' placeholder='Enter the Email:'  name='Email'></input><br/>
+        <br/>
+        <label>Password:</label>
+        <input type='text' placeholder='Enter the Password:'  name='password'></input><br/>
+        <br/>
+        <button onClick={handleReg}>Submit</button>
+      </form>
+      </center>
+    </div>
+
+    </>
+  )
+}
+export default Register
+END
+-----++------------------------------------------------------------------------------------
+
+10.FORM validation
+Code:
+import React, { useState } from 'react';
+const Lab=()=> {
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
+
+    const [errors, setErrors] = useState({});
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const newErrors = validateForm(formData);
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length === 0) {
+            console.log('Form submitted successfully!');
+        } else {
+            console.log('Form submission failed due to validation errors.');
+        }
+    };
+
+    const validateForm = (data) => {
+        const errors = {};
+
+        if (!data.email.trim()) {
+            errors.email = 'Email is required';
+        } else if (!/\S+@\S+\.\S+/.test(data.email)) {
+            errors.email = 'Email is invalid';
+        }
+
+        if (!data.password) {
+            errors.password = 'Password is required';
+        } else if (data.password.length < 8) {
+            errors.password = 'Password must be at least 8 characters long';
+        }
+
+        return errors;
+    };
+
+    return (
+        <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
+            <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Login Form</h2>
+            <form onSubmit={handleSubmit}>
+                <div style={{ marginBottom: '15px' }}>
+                    <label style={{ display: 'block', marginBottom: '5px' }}>Email:</label>
+                    <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                    />
+                    {errors.email && (
+                        <span style={{ color: 'red', fontSize: '12px' }}>
+                            {errors.email}
+                        </span>
+                    )}
+                </div>
+                <div style={{ marginBottom: '15px' }}>
+                    <label style={{ display: 'block', marginBottom: '5px' }}>Password:</label>
+                    <input
+                        type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                    />
+                    {errors.password && (
+                        <span style={{ color: 'red', fontSize: '12px' }}>
+                            {errors.password}
+                        </span>
+                    )}
+                </div>
+                <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                    Submit
+                </button>
+            </form>
+        </div>
+    );
+}
+export default Lab;
+END
+-----------------------------------------------------------------------------
+10.1 .FORM validation (must install material UI )
+CODE:
+import { TextField, Typography, Button, Box, Paper } from '@mui/material';
+import React, { useState } from 'react';
+
+const Log = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+    const [user, setUser] = useState("");
+    const [email, setEmail] = useState("");
+    const [pass, setPass] = useState("");
+    const [erroru, setErroru] = useState(false);
+    const [errore, setErrore] = useState(false);
+    const [errorp, setErrorp] = useState(false);
+    const [message, setMessage] = useState("");
+
+    const handleUser = (e) => {
+        setUser(e.target.value);
+    };
+
+    const handleEmail = (e) => {
+        setEmail(e.target.value);
+    };
+
+    const handlePass = (e) => {
+        setPass(e.target.value);
+    };
+
+    const handleChange = () => {
+        let isValid = true;
+
+        if (user === "" || email === "" || pass === "") {
+            alert("Form is empty. Please fill out all fields.");
+            setErroru(true);
+            setErrore(true);
+            setErrorp(true);
+            isValid = false;
+        } else {
+            if (user.length < 3) {
+                setErroru(true);
+                isValid = false;
+            } else {
+                setErroru(false);
+            }
+
+            if (!emailRegex.test(email)) {
+                setErrore(true);
+                isValid = false;
+            } else {
+                setErrore(false);
+            }
+
+            if (pass.length <=9) {
+                setErrorp(true);
+                isValid = false;
+            } else {
+                setErrorp(false);
+            }
+        }
+
+        if (isValid) {
+            alert(Email: ${email} Password: ${pass});
+            setTimeout(() => {
+                setMessage("Login successful");
+            }, 3000);
+        }
+    };
+
+    return (
+        <Box 
+            sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh',
+                backgroundColor: '#f0f0f0',
+            }}
+        >
+            <Paper 
+                elevation={14} 
+                sx={{ 
+                    padding: 4, 
+                    height: 500,
+                    width: 400, 
+                    textAlign: 'center', 
+                    borderRadius: 3 
+                }}
+            >
+                <Typography variant='h6' sx={{ mb: 2 }}>
+                    Welcome to Login Page!
+                </Typography>
+                <TextField 
+                    fullWidth
+                    label='Username'
+                    variant='outlined'
+                    margin='dense'
+                    required
+                    value={user}
+                    onChange={handleUser}
+                    error={erroru}
+                    helperText={erroru ? "Username should only contain more than of 3 characters" : ""}
+                />
+                <TextField 
+                    fullWidth 
+                    label='Email' 
+                    variant='outlined' 
+                    margin='dense' 
+                    required
+                    value={email}
+                    onChange={handleEmail}
+                    error={errore}
+                    helperText={errore ? "Please enter a valid email address" : ""}
+                />
+                <TextField 
+                    fullWidth 
+                    label='Phone no' 
+                    variant='outlined' 
+                    margin='dense' 
+                    type='password' 
+                    sx={{ mb: 2 }}
+                    required
+                    value={pass}
+                    onChange={handlePass}
+                    error={errorp}
+                    helperText={errorp ? "Phone number should be exactly 10 numbers" : ""}
+                />
+                <Button 
+                    variant='contained' 
+                    color='primary' 
+                    fullWidth 
+                    sx={{ mt: 2 }}
+                    onClick={handleChange}
+                >
+                    Login
+                </Button>
+              
+                    <Typography sx={{ mt: 2, color: 'green' }}>
+                        {message}
+                    </Typography>
+                
+            </Paper>
+        </Box>
+    );
+}
+
+export default Log;
+END
+
+
